@@ -1,0 +1,70 @@
+﻿package service
+
+import (
+	"Go_Pan/internal/repo"
+	"Go_Pan/model"
+	"Go_Pan/utils"
+	"errors"
+)
+
+// CreateUser hashes password and creates a user.
+func CreateUser(user *model.User) error {
+	// 对密码进行加
+	user.Password = utils.GetPwd(user.Password)
+	if err := repo.Db.Create(user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// FindIdByUsername returns user ID by username.
+func FindIdByUsername(username string) (uint64, error) {
+	var user model.User
+	if err := repo.Db.Model(&model.User{}).Where("user_name = ?", username).First(&user).Error; err != nil {
+		return 0, err
+	}
+	return user.ID, nil
+}
+
+// FindUserNameById returns username by ID.
+func FindUserNameById(userId uint64) (string, error) {
+	var user model.User
+	if err := repo.Db.Model(&model.User{}).Where("id = ?", userId).First(&user).Error; err != nil {
+		return "", err
+	}
+	return user.UserName, nil
+}
+
+// IsExist checks whether a user exists.
+func IsExist(username string) (*model.User, error) {
+	var user model.User
+	if err := repo.Db.Model(&model.User{}).Where("user_name = ?", username).First(&user).Error; err != nil {
+		return &model.User{}, err
+	}
+	return &user, nil
+}
+
+// CheckPassword verifies a user's password.
+func CheckPassword(username, password string) error {
+	var user model.User
+	if err := repo.Db.Model(&model.User{}).Where("user_name = ?", username).First(&user).Error; err != nil {
+		return err
+	}
+	// 使用 bcrypt 验证密码
+	if !utils.CheckPwd(password, user.Password) {
+		return errors.New("password error")
+	}
+	return nil
+}
+
+// IsEmailExist checks whether an email exists.
+func IsEmailExist(email string) error {
+	var user model.User
+	if err := repo.Db.Model(&model.User{}).Where("email = ?", email).First(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+
+

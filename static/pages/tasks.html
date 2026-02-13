@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 任务</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="tasks">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="./auth.html">认证</a>
+        <a href="./files.html">文件</a>
+        <a href="./upload.html">上传</a>
+        <a href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a class="active" href="./tasks.html">任务</a>
+        <a href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>离线下载任务</h2>
+          <p>提交 URL 后由 Worker 异步下载并入库。</p>
+        </div>
+        <div class="hero-card">
+          <h2>状态监控</h2>
+          <p>可查看重试次数、来源地址与错误信息。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h3>创建任务</h3>
+          <div class="field">
+            <label for="taskUrl">来源 URL</label>
+            <input id="taskUrl" type="url" />
+          </div>
+          <div class="field">
+            <label for="taskName">文件名（可选）</label>
+            <input id="taskName" type="text" />
+          </div>
+          <div class="actions">
+            <button id="taskCreateBtn" class="primary">创建任务</button>
+          </div>
+          <div id="taskStatus" class="status">待操作</div>
+          <p class="note">离线下载需要单独运行 `cmd/worker` 进程。</p>
+        </div>
+
+        <div class="panel wide">
+          <h3>任务列表</h3>
+          <div class="actions">
+            <button id="taskListBtn" class="secondary">刷新</button>
+          </div>
+          <div id="taskListStatus" class="status">待操作</div>
+          <p class="note">如果内网或本地 URL 被拒绝，请在服务端设置 `DOWNLOAD_ALLOW_PRIVATE=true`。</p>
+          <div class="table task-table">
+            <div class="row header">
+              <span>ID</span>
+              <span>状态</span>
+              <span>进度</span>
+              <span>重试</span>
+              <span>更新时间</span>
+              <span>Source</span>
+              <span>Error</span>
+            </div>
+            <div id="taskRows" class="rows"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+
+

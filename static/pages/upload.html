@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 上传</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="upload">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="./auth.html">认证</a>
+        <a href="./files.html">文件</a>
+        <a class="active" href="./upload.html">上传</a>
+        <a href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a href="./tasks.html">任务</a>
+        <a href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>上传中心</h2>
+          <p>支持秒传、分片上传、文件夹上传，以及 URL 导入上传。</p>
+        </div>
+        <div class="hero-card">
+          <h2>说明</h2>
+          <p>URL 导入会直接从远端拉取文件并写入 MinIO，不依赖本地文件路径。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel full">
+          <h3>目标目录</h3>
+          <div class="field">
+            <label for="uploadTargetPath">目标目录路径</label>
+            <input id="uploadTargetPath" type="text" placeholder="例如 /项目/2026" />
+          </div>
+          <div class="field">
+            <label>
+              <input id="uploadCreateMissing" type="checkbox" /> 自动创建缺失目录
+            </label>
+          </div>
+          <div class="actions">
+            <button id="uploadUseLastBtn" class="ghost">使用文件页最近目录</button>
+            <a class="ghost" href="./files.html">打开文件管理</a>
+          </div>
+          <div id="uploadTargetStatus" class="status">待操作</div>
+        </div>
+
+        <div class="panel wide">
+          <h3>秒传（Hash 上传）</h3>
+          <div class="field">
+            <label for="instantFile">本地文件</label>
+            <input id="instantFile" type="file" />
+          </div>
+          <div class="field row">
+            <div>
+              <label for="instantName">文件名</label>
+              <input id="instantName" type="text" />
+            </div>
+            <div>
+              <label for="instantSize">大小</label>
+              <input id="instantSize" type="number" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="instantHash">Hash（SHA-256）</label>
+            <input id="instantHash" type="text" />
+          </div>
+          <div class="actions">
+            <button id="instantHashBtn" class="ghost">计算 Hash</button>
+            <button id="instantUploadBtn" class="primary">提交秒传</button>
+          </div>
+          <div id="instantStatus" class="status">待操作</div>
+        </div>
+
+        <div class="panel wide">
+          <h3>分片上传</h3>
+          <div class="field">
+            <label for="multipartFile">本地文件</label>
+            <input id="multipartFile" type="file" />
+          </div>
+          <div class="field row">
+            <div>
+              <label for="multipartChunkSize">分片大小（MB）</label>
+              <input id="multipartChunkSize" type="number" value="5" />
+            </div>
+          </div>
+          <div class="actions">
+            <button id="multipartBtn" class="primary">上传分片</button>
+          </div>
+          <div class="status">
+            <div class="badge"><span>进度</span></div>
+            <div class="table">
+              <div class="row header">
+                <span>分片</span>
+                <span>状态</span>
+                <span>进度</span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="row">
+                <span
+                  id="multipartBar"
+                  style="grid-column: 1 / -1; display: block; height: 8px; background: linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius: 999px; width: 0%;"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div id="multipartStatus" class="status">待操作</div>
+        </div>
+
+        <div class="panel wide">
+          <h3>文件夹上传</h3>
+          <div class="field">
+            <label for="folderInput">选择文件名</label>
+            <input id="folderInput" type="file" webkitdirectory directory multiple />
+          </div>
+          <div class="field row">
+            <div>
+              <label for="folderChunkSize">分片大小（MB）</label>
+              <input id="folderChunkSize" type="number" value="5" />
+            </div>
+          </div>
+          <div class="actions">
+            <button id="folderUploadBtn" class="primary">上传文件名</button>
+          </div>
+          <div id="folderStatus" class="status">待操作</div>
+          <p class="note">文件按顺序上传，可降低并发压力。</p>
+        </div>
+
+        <div class="panel">
+          <h3>URL 导入上传</h3>
+          <div class="field">
+            <label for="urlUploadURL">来源 URL</label>
+            <input id="urlUploadURL" type="url" placeholder="https://example.com/file.zip" />
+          </div>
+          <div class="field">
+            <label for="urlUploadName">保存文件名（可选）</label>
+            <input id="urlUploadName" type="text" placeholder="可留空自动推断" />
+          </div>
+          <div class="actions">
+            <button id="urlUploadBtn" class="secondary">开始导入</button>
+          </div>
+          <div id="urlUploadStatus" class="status">待操作</div>
+          <p class="note">该功能直接从 URL 拉取并写入 MinIO，不读取本地文件路径。</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+
+

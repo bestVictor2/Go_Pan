@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 前端</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-page="home">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a class="active" href="./index.html">首页</a>
+        <a href="./pages/auth.html">认证</a>
+        <a href="./pages/files.html">文件</a>
+        <a href="./pages/upload.html">上传</a>
+        <a href="./pages/share.html">分享</a>
+        <a href="./pages/recycle.html">回收站</a>
+        <a href="./pages/tasks.html">任务</a>
+        <a href="./pages/preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>前端控制台</h2>
+          <p>
+            该界面覆盖后端全部 API，推荐按顺序完成：认证、文件、上传、分享、回收站、任务、预览。
+          </p>
+        </div>
+        <div class="hero-card">
+          <h2>快速检查</h2>
+          <p>先验证 Token 是否有效，再进行上传或任务操作。</p>
+          <div class="actions">
+            <button id="pingBtn" class="primary">检查 API</button>
+          </div>
+          <div id="pingStatus" class="status">待操作。</div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h3>认证</h3>
+          <p class="status">注册、激活与登录。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/auth.html">进入认证</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>文件</h3>
+          <p class="status">列表、搜索、移动、重命名、预览、下载。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/files.html">进入文件</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>上传</h3>
+          <p class="status">Instant, multipart, URL import, folder upload.</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/upload.html">进入上传</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>分享</h3>
+          <p class="status">创建分享链接与下载入口。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/share.html">进入分享</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>回收站</h3>
+          <p class="status">恢复或彻底删除。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/recycle.html">进入回收站</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>任务</h3>
+          <p class="status">离线下载任务创建与状态监控。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/tasks.html">进入任务</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>预览</h3>
+          <p class="status">生成预览链接。</p>
+          <div class="actions">
+            <a class="ghost" href="./pages/preview.html">进入预览</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
+
+

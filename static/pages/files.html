@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 文件</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="files">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="./auth.html">认证</a>
+        <a class="active" href="./files.html">文件</a>
+        <a href="./upload.html">上传</a>
+        <a href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a href="./tasks.html">任务</a>
+        <a href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>文件管理</h2>
+          <p>浏览目录并完成重命名、移动、删除、下载等操作。</p>
+        </div>
+        <div class="hero-card">
+          <h2>说明</h2>
+          <p>分享链接统一在“分享”页面创建，避免入口重复。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel full">
+          <div class="panel-header">
+            <div>
+              <h3>文件浏览</h3>
+              <div id="breadcrumb" class="breadcrumb"></div>
+            </div>
+            <div class="actions">
+              <button id="upBtn" class="ghost">上级</button>
+              <button id="refreshBtn" class="ghost">刷新</button>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="field grow">
+              <label for="searchQuery">搜索</label>
+              <input id="searchQuery" type="text" placeholder="按文件名搜索" />
+            </div>
+            <label>
+              <input id="searchInCurrent" type="checkbox" checked /> 仅当前目录            </label>
+            <div class="actions">
+              <button id="searchBtn" class="secondary">搜索</button>
+              <button id="clearSearchBtn" class="ghost">清空</button>
+            </div>
+            <p class="note">清空只会重置搜索条件，不会删除文件。</p>
+          </div>
+
+          <div class="toolbar">
+            <div class="field grow">
+              <label for="folderName">新建文件夹</label>
+              <input id="folderName" type="text" placeholder="文件夹名" />
+            </div>
+            <div class="actions">
+              <button id="folderBtn" class="primary">创建</button>
+            </div>
+          </div>
+          <div id="folderStatus" class="status">待操作</div>
+
+          <div id="listStatus" class="status">待操作</div>
+          <div class="table file-table">
+            <div class="row header">
+              <span><input id="selectAll" type="checkbox" /></span>
+              <span>名称</span>
+              <span>类型</span>
+              <span>大小</span>
+              <span>更新时间</span>
+            </div>
+            <div id="listRows" class="rows"></div>
+          </div>
+        </div>
+
+        <div class="panel half">
+          <h3>操作</h3>
+
+          <div class="action-group">
+            <h4>选择</h4>
+            <div id="selectionSummary" class="status">未选择</div>
+            <div class="actions">
+              <button id="clearSelectionBtn" class="ghost">清空选择</button>
+            </div>
+          </div>
+
+          <div class="action-group">
+            <h4>重命名</h4>
+            <div class="field">
+              <label for="renameNewName">新名称</label>
+              <input id="renameNewName" type="text" />
+            </div>
+            <div class="actions">
+              <button id="renameBtn" class="secondary">重命名</button>
+            </div>
+            <div id="renameStatus" class="status">待操作</div>
+          </div>
+
+          <div class="action-group">
+            <h4>移动 / 复制</h4>
+            <div class="field">
+              <label for="moveTargetPath">目标路径</label>
+              <input id="moveTargetPath" type="text" placeholder="例如 /项目/2026" />
+            </div>
+            <p class="note">/ 开头表示根目录，否则为相对路径。</p>
+            <div class="actions">
+              <button id="moveBtn" class="primary">移动</button>
+              <button id="copyBtn" class="ghost">复制</button>
+            </div>
+            <div id="moveStatus" class="status">待操作</div>
+          </div>
+
+          <div class="action-group">
+            <h4>删除</h4>
+            <div class="actions">
+              <button id="deleteBtn" class="warn">移入回收站</button>
+            </div>
+            <div id="deleteStatus" class="status">待操作</div>
+          </div>
+        </div>
+
+        <div class="panel half">
+          <h3>链接与下载</h3>
+
+          <div class="action-group">
+            <h4>预览</h4>
+            <div class="actions">
+              <button id="previewBtn" class="primary">获取预览链接</button>
+            </div>
+            <div id="previewStatus" class="status">待操作</div>
+          </div>
+
+          <div class="action-group">
+            <h4>压缩下载</h4>
+            <div class="field">
+              <label for="archiveName">压缩包名称</label>
+              <input id="archiveName" type="text" placeholder="archive.zip" />
+            </div>
+            <div class="actions">
+              <button id="archiveBtn" class="primary">下载压缩包</button>
+            </div>
+            <div id="archiveStatus" class="status">待操作</div>
+          </div>
+
+          <div class="action-group">
+            <h4>直接下载</h4>
+            <div class="actions">
+              <button id="minioBtn" class="ghost">打开链接</button>
+            </div>
+            <div id="minioStatus" class="status">待操作</div>
+            <p class="note">为已登录用户提供来自 MinIO 的直接预签名 URL。共享链接在共享页面进行管理</p>
+          </div>
+
+          <div class="action-group">
+            <h4>分享入口</h4>
+            <div class="actions">
+              <a class="ghost" href="./share.html">前往分享页面创建链接</a>
+            </div>
+            <p class="note">分享页面生成的是可外部访问的链接，该下载入口为仅登录态下的直连下载。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 预览</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="preview">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="./auth.html">认证</a>
+        <a href="./files.html">文件</a>
+        <a href="./upload.html">上传</a>
+        <a href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a href="./tasks.html">任务</a>
+        <a class="active" href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>预览链接</h2>
+          <p>直接使用文件页已选文件生成预览链接。</p>
+        </div>
+        <div class="hero-card">
+          <h2>提示</h2>
+          <p>预览链接通常有时效，过期后需要重新生成。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h3>预览</h3>
+          <div class="field">
+            <label>当前选择</label>
+            <div id="previewSelected" class="selection-pill">未选择</div>
+          </div>
+          <div class="actions">
+            <button id="previewRefreshBtn" class="ghost">刷新选择</button>
+            <a class="ghost" href="./files.html">打开文件管理</a>
+          </div>
+          <div class="actions">
+            <button id="previewDirectBtn" class="primary">获取预览链接</button>
+          </div>
+          <div id="previewStatus" class="status">待操作</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+
+

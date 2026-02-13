@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 认证</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="auth">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a class="active" href="./auth.html">认证</a>
+        <a href="./files.html">文件</a>
+        <a href="./upload.html">上传</a>
+        <a href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a href="./tasks.html">任务</a>
+        <a href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>认证入口</h2>
+          <p>注册、激活与登录账号。激活邮件依赖后端 SMTP 配置。</p>
+        </div>
+        <div class="hero-card">
+          <h2>激活 Token</h2>
+          <p>没有邮件时，可以手动输入 Token 激活账号。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h3>登录</h3>
+          <div class="field">
+            <label for="loginUsername">用户名</label>
+            <input id="loginUsername" type="text" />
+          </div>
+          <div class="field">
+            <label for="loginPassword">密码</label>
+            <input id="loginPassword" type="password" />
+          </div>
+          <div class="actions">
+            <button id="loginBtn" class="primary">登录</button>
+          </div>
+          <div id="loginStatus" class="status">待操作。</div>
+        </div>
+
+        <div class="panel">
+          <h3>注册</h3>
+          <div class="field">
+            <label for="registerUsername">用户名</label>
+            <input id="registerUsername" type="text" />
+          </div>
+          <div class="field">
+            <label for="registerEmail">邮箱</label>
+            <input id="registerEmail" type="email" />
+          </div>
+          <div class="field">
+            <label for="registerPassword">密码</label>
+            <input id="registerPassword" type="password" />
+          </div>
+          <div class="field">
+            <label for="registerPassword2">确认密码</label>
+            <input id="registerPassword2" type="password" />
+          </div>
+          <div class="actions">
+            <button id="registerBtn" class="secondary">注册</button>
+          </div>
+          <div id="registerStatus" class="status">待操作。</div>
+        </div>
+
+        <div class="panel">
+          <h3>激活</h3>
+          <div class="field">
+            <label for="activateToken">Token</label>
+            <input id="activateToken" type="text" />
+          </div>
+          <div class="actions">
+            <button id="activateBtn" class="warn">激活</button>
+          </div>
+          <div id="activateStatus" class="status">待操作。</div>
+          <p class="note">激活链接格式：/api/activate?token=TOKEN</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+

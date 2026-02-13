@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Pan 分享</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-page="share">
+    <div class="backdrop">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+    </div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>Go Pan</h1>
+      </div>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="./auth.html">认证</a>
+        <a href="./files.html">文件</a>
+        <a href="./upload.html">上传</a>
+        <a class="active" href="./share.html">分享</a>
+        <a href="./recycle.html">回收站</a>
+        <a href="./tasks.html">任务</a>
+        <a href="./preview.html">预览</a>
+      </nav>
+      <div class="auth-bar">
+        <input id="apiBase" type="text" value="" />
+        <button id="saveBase" class="ghost">设置 API</button>
+        <span class="auth-chip">状态：<strong id="authState">-</strong></span>
+        <span class="auth-chip">用户：<strong id="authUser">-</strong></span>
+        <span class="auth-chip">Token：<strong id="authToken">-</strong></span>
+        <button id="logoutBtn" class="ghost">退出</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="page-hero">
+        <div class="hero-card">
+          <h2>分享管理</h2>
+          <p>直接使用文件页选择项创建分享链接。</p>
+        </div>
+        <div class="hero-card">
+          <h2>直链下载</h2>
+          <p>通过分享 ID 与提取码生成下载地址。</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h3>创建分享</h3>
+          <div class="field">
+            <label>当前选择</label>
+            <div id="shareSelected" class="selection-pill">未选择</div>
+          </div>
+          <div class="actions">
+            <button id="shareRefreshBtn" class="ghost">刷新选择</button>
+            <a class="ghost" href="./files.html">打开文件管理</a>
+          </div>
+          <div class="field row">
+            <div>
+              <label for="shareExpire">有效天数</label>
+              <input id="shareExpire" type="number" value="7" />
+            </div>
+            <div>
+              <label>
+                <input id="shareNeedCode" type="checkbox" checked /> 需要提取码
+              </label>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="shareBtn" class="primary">创建分享</button>
+          </div>
+          <div id="shareStatus" class="status">待操作</div>
+        </div>
+
+        <div class="panel">
+          <h3>生成下载链接</h3>
+          <div class="field">
+            <label for="shareDownloadId">分享 ID</label>
+            <input id="shareDownloadId" type="text" />
+          </div>
+          <div class="field">
+            <label for="shareDownloadCode">提取码</label>
+            <input id="shareDownloadCode" type="text" />
+          </div>
+          <div class="actions">
+            <button id="shareDownloadBtn" class="secondary">生成链接</button>
+          </div>
+          <div id="shareDownloadStatus" class="status">待操作</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../app.js"></script>
+  </body>
+</html>
+
+
+
