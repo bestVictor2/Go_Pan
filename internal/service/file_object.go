@@ -178,7 +178,7 @@ func FastUpload(
 		Name:     req.FileName,
 		ObjectID: &obj.ID,
 		Size:     obj.Size,
-		IsDir:    req.IsDir,
+		IsDir:    false,
 	}
 	if err := CreateUserFileEntry(userFile); err != nil {
 		_, _ = DecreaseRefCount(obj.ID)
@@ -480,7 +480,7 @@ func CompleteFile(
 		UserID:   userId,
 		Name:     req.FileName,
 		ParentID: parentID,
-		IsDir:    req.IsDir,
+		IsDir:    false,
 		ObjectID: &objectID,
 		Size:     req.FileSize,
 	}

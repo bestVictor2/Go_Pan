@@ -92,18 +92,30 @@ func (l *RedisLock) Unlock(ctx context.Context) error {
 
 // ListenRedisExpired listens for Redis expired events.
 func ListenRedisExpired(ctx context.Context, rdb *redis.Client, ready chan<- struct{}) {
-	pubsub := rdb.Subscribe(ctx, "__keyevent@0__:expired")
+	channel := fmt.Sprintf("__keyevent@%d__:expired", config.AppConfig.RedisDB)
+	pubsub := rdb.Subscribe(ctx, channel)
+	defer pubsub.Close()
 	_, err := pubsub.Receive(ctx)
 	if err != nil {
-		log.Fatalf("subscribe failed: %v", err)
+		log.Printf("subscribe failed: %v", err)
+		close(ready)
+		return
 	}
 	close(ready)
 	ch := pubsub.Channel()
 
-	for msg := range ch {
-		log.Printf("[listener] got message: %#v\n", msg)
-		key := msg.Payload
-		handleExpiredKey(ctx, key)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case msg, ok := <-ch:
+			if !ok {
+				return
+			}
+			log.Printf("[listener] got message: %#v\n", msg)
+			key := msg.Payload
+			handleExpiredKey(ctx, key)
+		}
 	}
 }
 
@@ -126,6 +138,3 @@ func handleShareExpired(ctx context.Context, key string) {
 
 	log.Println("share expired:", shareID)
 }
-
-
-

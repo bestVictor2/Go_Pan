@@ -6,6 +6,7 @@ import (
 	"CloudVault/internal/mq"
 	"CloudVault/internal/repo"
 	"CloudVault/internal/service"
+	"CloudVault/internal/storage"
 	"CloudVault/model"
 	"CloudVault/utils"
 	"context"
@@ -110,6 +111,12 @@ func ProcessDownloadTask(ctx context.Context, taskID uint64) error {
 	}
 
 	objectName := service.BuildObjectName(userName, task.ObjectName)
+	cleanupObject := func() {
+		if storage.Default != nil {
+			_ = storage.Default.RemoveObject(ctx, task.Bucket, objectName)
+		}
+	}
+	createdNewObject := false
 	fileObj := &model.FileObject{
 		UserID:     task.UserID,
 		Hash:       task.ObjectName,
@@ -119,7 +126,14 @@ func ProcessDownloadTask(ctx context.Context, taskID uint64) error {
 		RefCount:   1,
 	}
 	if err := service.CreateFilesObject(fileObj); err != nil {
-		return err
+		existingObj, getErr := service.GetFileObjectByHash(task.ObjectName)
+		if getErr != nil {
+			cleanupObject()
+			return err
+		}
+		fileObj = existingObj
+	} else {
+		createdNewObject = true
 	}
 
 	userFile := &model.UserFile{
@@ -130,6 +144,10 @@ func ProcessDownloadTask(ctx context.Context, taskID uint64) error {
 		Size:     size,
 	}
 	if err := service.CreateUserFileEntry(userFile); err != nil {
+		if createdNewObject {
+			cleanupObject()
+			_ = repo.Db.Delete(&model.FileObject{}, fileObj.ID).Error
+		}
 		return err
 	}
 

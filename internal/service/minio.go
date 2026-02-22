@@ -362,10 +362,10 @@ func DownloadByHTTP(ctx context.Context, rawURL string, fileName string, userId 
 			Status:     resp.Status,
 		}
 	}
+	if resp.ContentLength < 0 {
+		return 0, fmt.Errorf("unknown content length")
+	}
 	if config.AppConfig.DownloadMaxBytes > 0 {
-		if resp.ContentLength < 0 {
-			return 0, fmt.Errorf("unknown content length")
-		}
 		if resp.ContentLength > config.AppConfig.DownloadMaxBytes {
 			return 0, fmt.Errorf("content too large")
 		}

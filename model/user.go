@@ -10,7 +10,7 @@ type User struct {
 
 	UserName string `gorm:"column:user_name;type:varchar(50);not null;unique"`
 
-	Password string `gorm:"column:pass_word;type:varchar(255);not null"`
+	Password string `gorm:"column:pass_word;type:varchar(255);not null" json:"-"`
 
 	Email string `gorm:"column:email;type:varchar(255);not null;unique"`
 

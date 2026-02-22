@@ -7,6 +7,8 @@ import (
 	"CloudVault/utils"
 	"fmt"
 	"io"
+	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,13 +37,9 @@ func CreateShareHandler(c *gin.Context) {
 // ShareDownload downloads a shared file.
 func ShareDownload(c *gin.Context) {
 	shareID := c.Param("shareID")
-	extractCode := c.Query("extract_code")
+	extractCode := strings.TrimSpace(c.Query("extract_code"))
 	if extractCode == "" {
-		var req struct {
-			ExtractCode string `json:"extract_code"`
-		}
-		_ = c.ShouldBindJSON(&req)
-		extractCode = req.ExtractCode
+		extractCode = strings.TrimSpace(c.PostForm("extract_code"))
 	}
 
 	share, err := service.CheckShare(shareID, extractCode)
@@ -86,7 +84,7 @@ func ShareDownload(c *gin.Context) {
 	c.Header("Content-Length", fmt.Sprintf("%d", info.Size))
 
 	if _, err := io.Copy(c.Writer, object); err != nil {
-		c.JSON(500, gin.H{"msg": "download failed"})
+		log.Printf("share download stream failed: %v", err)
 		return
 	}
 	_ = service.LogShareAccess(share, service.ShareAccessMeta{

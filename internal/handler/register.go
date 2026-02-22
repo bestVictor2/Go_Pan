@@ -77,15 +77,10 @@ func buildActivateLink(c *gin.Context, token string) string {
 	baseURL := strings.TrimSpace(os.Getenv("APP_BASE_URL"))
 	if baseURL == "" {
 		scheme := "http"
-		if forwarded := strings.TrimSpace(c.GetHeader("X-Forwarded-Proto")); forwarded != "" {
-			scheme = forwarded
-		} else if c.Request.TLS != nil {
+		if c.Request.TLS != nil {
 			scheme = "https"
 		}
-		host := strings.TrimSpace(c.GetHeader("X-Forwarded-Host"))
-		if host == "" {
-			host = c.Request.Host
-		}
+		host := strings.TrimSpace(c.Request.Host)
 		baseURL = scheme + "://" + host
 	}
 	baseURL = strings.TrimRight(baseURL, "/")
