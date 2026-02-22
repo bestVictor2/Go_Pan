@@ -32,7 +32,7 @@ func autoMigrateAll(db *gorm.DB) {
 	db.AutoMigrate(&model.ShareAccessLog{})
 }
 
-// migrateUserFileIndexes keeps user_file uniqueness aligned with active/deleted state.
+// migrateUserFileIndexes keeps user_file uniqueness aligned with active/deleted state..
 func migrateUserFileIndexes(db *gorm.DB) {
 	if db == nil {
 		return
