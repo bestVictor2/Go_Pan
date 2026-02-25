@@ -34,7 +34,7 @@ func GetPreviewURL(ctx context.Context, userID, fileID uint64, expiry time.Durat
 		contentType = "application/octet-stream"
 	}
 	safeName := utils.SanitizeHeaderFilename(file.Name)
-	disposition := fmt.Sprintf("inline; filename=\"%s\"", safeName)
+	disposition := fmt.Sprintf("inline; filename=\"%s\"", safeName) // inline 浏览器直接预览
 	url, err := storage.Default.PresignedGetObjectWithResponse(
 		ctx,
 		obj.BucketName,
@@ -50,4 +50,3 @@ func GetPreviewURL(ctx context.Context, userID, fileID uint64, expiry time.Durat
 	}
 	return url, nil
 }
-

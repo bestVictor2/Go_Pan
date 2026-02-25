@@ -34,7 +34,7 @@ func MinioDownloadFile(c *gin.Context) {
 		err      error
 	)
 
-	if req.FileID != 0 {
+	if req.FileID != 0 { // 如果存在 id 则使用 id 进行寻找
 		if !service.CheckFileOwner(userID, req.FileID) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "file not found"})
 			return
@@ -98,6 +98,7 @@ func MinioDownloadFile(c *gin.Context) {
 		log.Println("download error:", err)
 		return
 	}
+	// 下载后的行为记录 && 下载统计
 	_ = service.RecordRecentAccess(userID, userFile.ID, "download")
 	_ = activity.Emit(c.Request.Context(), userID, activity.ActionDownload, userFile.ID, written)
 }
@@ -196,7 +197,7 @@ func MultipartUploadChunk(c *gin.Context) {
 		return
 	}
 	userID := c.MustGet("user_id").(uint64)
-	session, err := service.GetUploadSessionByUploadID(uploadID)
+	session, err := service.GetUploadSessionByUploadID(uploadID) // 查找 session
 	if err != nil {
 		c.JSON(404, gin.H{"msg": "upload session not found"})
 		return

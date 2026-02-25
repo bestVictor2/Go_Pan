@@ -36,7 +36,7 @@ func GetShareAccessStats(c *gin.Context) {
 	c.JSON(http.StatusOK, stats)
 }
 
-func parsePositiveInt(raw string, fallback int) int {
+func parsePositiveInt(raw string, fallback int) int { // 解析参数工具 防止错误
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
 		return fallback

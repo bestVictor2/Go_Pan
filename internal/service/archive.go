@@ -14,7 +14,7 @@ type ArchiveEntry struct {
 	IsDir   bool
 }
 
-func sanitizeArchiveName(name string) string {
+func sanitizeArchiveName(name string) string { // 保证安全
 	clean := strings.TrimSpace(name)
 	clean = strings.ReplaceAll(clean, "\\", "/")
 	clean = strings.ReplaceAll(clean, "/", "_")
@@ -35,7 +35,7 @@ func BuildArchiveEntries(userID uint64, fileIDs []uint64) ([]ArchiveEntry, error
 			First(&file).Error; err != nil {
 			return nil, err
 		}
-		if file.IsDir {
+		if file.IsDir { // 如果是 目录
 			dirPath := sanitizeArchiveName(file.Name)
 			entries = append(entries, ArchiveEntry{
 				ZipPath: dirPath + "/",
@@ -96,6 +96,3 @@ func collectArchiveChildren(userID, parentID uint64, prefix string, entries *[]A
 	}
 	return nil
 }
-
-
-

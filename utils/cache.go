@@ -121,9 +121,11 @@ func BuildCacheKey(prefix string, params ...interface{}) string {
 }
 
 const (
-	CacheKeyUserFileList = "user:file:list"
-	CacheKeyUserInfo     = "user:info"
-	CacheKeyFileObject   = "file:object"
+	CacheKeyUserFileList   = "user:file:list"
+	CacheKeyUserInfo       = "user:info"
+	CacheKeyFileObject     = "file:object"
+	CacheKeyFileObjectHash = "file:object:hash"
+	CacheKeyFileObjectPath = "file:object:path"
 )
 
 type FileListCache struct {
@@ -230,5 +232,63 @@ func SetFileObjectToCache(ctx context.Context, objectId uint64, data *model.File
 func InvalidateFileObjectCache(ctx context.Context, objectId uint64) error {
 	manager := GetCacheManager()
 	key := BuildCacheKey(CacheKeyFileObject, objectId)
+	return manager.cache.Delete(ctx, key)
+}
+
+// GetFileObjectIDByHash reads cached file object ID by hash.
+func GetFileObjectIDByHash(ctx context.Context, hash string) (uint64, bool) {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectHash, hash)
+
+	var result uint64
+	if err := manager.cache.Get(ctx, key, &result); err != nil {
+		return 0, false
+	}
+	if result == 0 {
+		return 0, false
+	}
+	return result, true
+}
+
+// SetFileObjectIDByHash writes cached file object ID by hash.
+func SetFileObjectIDByHash(ctx context.Context, hash string, objectId uint64, expiration time.Duration) error {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectHash, hash)
+	return manager.cache.Set(ctx, key, objectId, expiration)
+}
+
+// InvalidateFileObjectHashCache clears cached file object ID by hash.
+func InvalidateFileObjectHashCache(ctx context.Context, hash string) error {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectHash, hash)
+	return manager.cache.Delete(ctx, key)
+}
+
+// GetFileObjectIDByPath reads cached file object ID by bucket and object name.
+func GetFileObjectIDByPath(ctx context.Context, bucket, object string) (uint64, bool) {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectPath, bucket, object)
+
+	var result uint64
+	if err := manager.cache.Get(ctx, key, &result); err != nil {
+		return 0, false
+	}
+	if result == 0 {
+		return 0, false
+	}
+	return result, true
+}
+
+// SetFileObjectIDByPath writes cached file object ID by bucket and object name.
+func SetFileObjectIDByPath(ctx context.Context, bucket, object string, objectId uint64, expiration time.Duration) error {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectPath, bucket, object)
+	return manager.cache.Set(ctx, key, objectId, expiration)
+}
+
+// InvalidateFileObjectPathCache clears cached file object ID by bucket and object name.
+func InvalidateFileObjectPathCache(ctx context.Context, bucket, object string) error {
+	manager := GetCacheManager()
+	key := BuildCacheKey(CacheKeyFileObjectPath, bucket, object)
 	return manager.cache.Delete(ctx, key)
 }

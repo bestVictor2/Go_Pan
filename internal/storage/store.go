@@ -44,5 +44,3 @@ var Default Store
 
 // DefaultTest is the test object store instance.
 var DefaultTest Store
-
-

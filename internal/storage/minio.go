@@ -99,12 +99,12 @@ func (s *MinioStore) PresignedGetObjectWithResponse(
 func (s *MinioStore) ComposeObject(ctx context.Context, dest CopyDest, sources ...CopySource) error {
 	srcs := make([]minio.CopySrcOptions, 0, len(sources))
 	for _, src := range sources {
-		srcs = append(srcs, minio.CopySrcOptions{
+		srcs = append(srcs, minio.CopySrcOptions{ // 将 sources 转换为 CopySrcOptions 格式
 			Bucket: src.Bucket,
 			Object: src.Object,
 		})
 	}
-	dst := minio.CopyDestOptions{
+	dst := minio.CopyDestOptions{ //构造目标格式 合并对象
 		Bucket: dest.Bucket,
 		Object: dest.Object,
 	}
@@ -129,7 +129,7 @@ func InitMinio() {
 	if err != nil {
 		log.Fatalln("check bucket fail:", err)
 	}
-	if !exists {
+	if !exists { // 不需要人工去 minio 建立 bucket 直接后端进行操作
 		if err := client.MakeBucket(ctx, config.AppConfig.BucketName, minio.MakeBucketOptions{}); err != nil {
 			log.Fatalln("create bucket fail:", err)
 		}
@@ -138,7 +138,7 @@ func InitMinio() {
 		Client: client,
 		Bucket: config.AppConfig.BucketName,
 	}
-	Default = NewMinioStore(client)
+	Default = NewMinioStore(client) // 导出 Default
 }
 
 // InitMinioTest initializes test MinIO bucket.
@@ -166,6 +166,3 @@ func InitMinioTest() {
 	}
 	DefaultTest = NewMinioStore(client)
 }
-
-
-

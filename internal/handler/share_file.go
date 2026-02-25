@@ -35,6 +35,13 @@ func CreateShareHandler(c *gin.Context) {
 }
 
 // ShareDownload downloads a shared file.
+/*
+分享链接是否正确？
+提取码是否正确？
+文件是否安全存在？
+如何进行高效安全的下载？
+记录该文件被谁下载过
+*/
 func ShareDownload(c *gin.Context) {
 	shareID := c.Param("shareID")
 	extractCode := strings.TrimSpace(c.Query("extract_code"))
@@ -74,6 +81,7 @@ func ShareDownload(c *gin.Context) {
 	}
 	defer object.Close()
 
+	// 设置响应头阶段
 	safeName := utils.SanitizeHeaderFilename(userFile.Name)
 	c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, safeName))
 	contentType := service.GetContentBook(userFile.Name)
@@ -87,10 +95,10 @@ func ShareDownload(c *gin.Context) {
 		log.Printf("share download stream failed: %v", err)
 		return
 	}
-	_ = service.LogShareAccess(share, service.ShareAccessMeta{
+	_ = service.LogShareAccess(share, service.ShareAccessMeta{ // 记录分享访问日志
 		VisitorIP: c.ClientIP(),
 		UserAgent: c.Request.UserAgent(),
 		Referer:   c.Request.Referer(),
 	})
-	_ = activity.Emit(c.Request.Context(), share.UserID, activity.ActionDownload, share.FileID, info.Size)
+	_ = activity.Emit(c.Request.Context(), share.UserID, activity.ActionDownload, share.FileID, info.Size) //记录下载行为埋点
 }

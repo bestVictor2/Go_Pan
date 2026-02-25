@@ -97,10 +97,10 @@ func Activate(c *gin.Context) {
 
 	key := "register:" + token
 	ctx := context.Background()
-	val, err := repo.Redis.Get(ctx, key).Result()
+	val, err := repo.Redis.Get(ctx, key).Result() // 查看 redis 中存储的数据
 	if err != nil {
 		usedKey := "register_used:" + token
-		if used, usedErr := repo.Redis.Get(ctx, usedKey).Result(); usedErr == nil && used == "1" {
+		if used, usedErr := repo.Redis.Get(ctx, usedKey).Result(); usedErr == nil && used == "1" { // 已被使用过
 			c.JSON(http.StatusOK, gin.H{"msg": "account already activated"})
 			return
 		}
@@ -113,7 +113,7 @@ func Activate(c *gin.Context) {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
-	if err := json.Unmarshal([]byte(val), &tmp); err != nil {
+	if err := json.Unmarshal([]byte(val), &tmp); err != nil { // 反序列化注册信息
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "decode failed"})
 		return
 	}
@@ -130,6 +130,6 @@ func Activate(c *gin.Context) {
 	}
 
 	repo.Redis.Del(ctx, key)
-	_ = repo.Redis.Set(ctx, "register_used:"+token, "1", 10*time.Minute).Err()
+	_ = repo.Redis.Set(ctx, "register_used:"+token, "1", 10*time.Minute).Err() // 幂等处理
 	c.JSON(http.StatusOK, gin.H{"msg": "account activated"})
 }
